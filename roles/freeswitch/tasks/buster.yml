@@ -1,0 +1,6 @@
+- name: Add FreeSwitch apt repository
+  copy:
+    src: buster/freeswitch.list
+    dest: /etc/apt/sources.list.d/
+  tags:
+    - install

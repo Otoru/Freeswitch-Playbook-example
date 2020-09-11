@@ -1,0 +1,16 @@
+<profile name="{{ item.name }}">
+  {% if item.domains is defined -%}
+  <domains>
+  {% for domain in item.domains %}
+    <domain{% for key,value in domain.items() %} {{ key }}="{{ value }}" {% endfor %}/>
+  {% endfor %}
+  </domains>
+  {% endif %}
+  {% if item.settings is defined -%}
+  <settings>
+  {% for key,value in item.settings.items() %}
+    <param name="{{ key }}" value="{{ value }}"/>
+  {% endfor %}
+  </settings>
+  {% endif %}
+</profile>

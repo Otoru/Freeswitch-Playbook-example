@@ -1,0 +1,119 @@
+---
+- name: Update repository and Upgrade packages
+  apt:
+    upgrade: "yes"
+    update_cache: yes
+  tags:
+    - install
+
+- name: Install dependencies
+  apt:
+    name: "{{ dependencies }}" 
+    state: latest
+  tags:
+    - install
+
+- include: stretch.yml
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'stretch'
+
+- include: buster.yml
+  when: ansible_distribution == 'Debian' and ansible_distribution_release == 'buster'
+  
+- name: Add FreeSwitch repository key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: BD3189F5A2B57698
+  tags:
+    - install
+
+- name: Update repository and Upgrade packages after add repository
+  apt:
+    upgrade: "yes"
+    update_cache: yes
+  tags:
+    - install
+
+- name: Install dependencies of freeswitch
+  apt: 
+    name: freeswitch
+    state: build-dep
+  tags:
+    - install
+    - build
+
+- name: Clone source code
+  git:
+    repo: "{{ repository }}"
+    dest: /usr/src/freeswitch
+    version: "{{ version }}"
+  tags:
+    - build
+
+- name: Run bootstrap
+  shell: ./bootstrap.sh -j
+  args:
+    chdir: /usr/src/freeswitch/
+  tags:
+    - build
+
+- name: Run configure
+  shell: ./configure
+  args:
+    chdir: /usr/src/freeswitch/
+  tags:
+    - build
+
+- name: Build source code
+  make:
+    chdir: /usr/src/freeswitch/
+  tags:
+    - build
+
+- name: Install freeswitch
+  make:
+    target: install
+    chdir: /usr/src/freeswitch/
+  tags:
+    - build
+
+- name: Create group
+  group:
+    name: freeswitch
+    state: present
+  tags:
+    - systemd
+
+- name: Create user
+  user:
+    name: freeswitch
+    group: freeswitch
+    home: /usr/local/freeswitch/
+    system: yes
+  tags:
+    - systemd
+
+- name: Change folders permissions
+  file:
+    path: /usr/local/freeswitch/
+    state: directory
+    recurse: yes
+    owner: freeswitch
+    group: freeswitch
+  tags:
+    - systemd
+
+- name: Add FreeSwitch service file
+  copy:
+    src: freeswitch.service
+    dest: /etc/systemd/system/
+  tags:
+    - systemd
+
+- name: Systemd Daemon reload
+  systemd:
+    daemon_reload: yes
+  notify: restart freeswitch
+  tags:
+    - systemd
+
+- include: settings.yml

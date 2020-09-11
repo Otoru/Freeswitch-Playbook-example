@@ -1,0 +1,60 @@
+---
+dependencies:
+- git
+- gnupg
+
+profiles:
+- name: internal
+  domains:
+    - name: all
+      alias: "true"
+      parse: "false"
+  settings:
+    debug: 0
+    dialplan: XML
+    sip-port: 5060
+    sip-trace: yes
+    context: default
+    auth-calls: "true"
+    ext-rtp-ip: auto-nat
+    ext-sip-ip: auto-nat
+    apply-nat-acl: nat.auto
+    rtp-ip: "$${local_ip_v4}"
+    sip-ip: "$${local_ip_v4}"
+    codec-prefs: "$${global_codec_prefs}"
+- name: external
+  settings:
+    debug: 0
+    dialplan: XML
+    sip-port: 5080
+    sip-trace: yes
+    context: default
+    auth-calls: "true"
+    ext-rtp-ip: auto-nat
+    ext-sip-ip: auto-nat
+    apply-nat-acl: nat.auto
+    rtp-ip: "$${local_ip_v4}"
+    sip-ip: "$${local_ip_v4}"
+    codec-prefs: "$${global_codec_prefs}"
+- name: vpn
+  settings:
+    debug: 0
+    dialplan: XML
+    sip-port: 5090
+    sip-trace: yes
+    context: default
+    auth-calls: "true"
+    ext-rtp-ip: auto-nat
+    ext-sip-ip: auto-nat
+    apply-nat-acl: nat.auto
+    rtp-ip: "$${local_ip_v4}"
+    sip-ip: "$${local_ip_v4}"
+    codec-prefs: "$${global_codec_prefs}"
+
+socket:
+  nat-map: "true"
+  listen-port: 8021
+  password: ClueCon
+  listen-ip: "127.0.0.1"
+  stop-on-bind-error: "true"
+  apply-inbound-acl: "localnet.auto"

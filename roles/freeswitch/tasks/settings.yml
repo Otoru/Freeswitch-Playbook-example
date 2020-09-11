@@ -1,0 +1,40 @@
+- name: configure event socket
+  template:
+    owner: freeswitch
+    group: freeswitch
+    src: event_socket.conf.xml.j2
+    dest: /usr/local/freeswitch/conf/autoload_configs/event_socket.conf.xml
+  tags:
+    - settings
+  notify: restart freeswitch
+
+- name: Remove ipv6 profiles
+  file:
+    state: absent
+    path: "{{ item }}"
+  with_items:
+    - /usr/local/freeswitch/conf/sip_profiles/external-ipv6.xml
+    - /usr/local/freeswitch/conf/sip_profiles/internal-ipv6.xml
+    - /usr/local/freeswitch/conf/sip_profiles/external-ipv6
+    - /usr/local/freeswitch/conf/sip_profiles/external
+  notify: restart freeswitch
+  tags:
+    - settings
+
+- name: configure profiles
+  template:
+    owner: freeswitch
+    group: freeswitch
+    src: profile.xml.j2
+    dest: "/usr/local/freeswitch/conf/sip_profiles/{{ item.name }}.xml"
+  notify: restart freeswitch
+  with_items: "{{ profiles }}"
+  tags:
+    - settings
+
+- name: Add freeswitch bin dir to system-wide $PATH.
+  copy:
+    dest: /etc/profile.d/freeswitch.sh
+    content: 'PATH=$PATH:/usr/local/freeswitch/bin'
+  tags:
+    - settings

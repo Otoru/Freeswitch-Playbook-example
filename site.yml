@@ -1,0 +1,14 @@
+---
+- hosts: virtualbox
+  remote_user: axt
+  become: true
+  roles:
+    - freeswitch
+  vars:
+    socket:
+      nat-map: "true"
+      listen-port: 8021
+      password: ClueCon
+      listen-ip: "0.0.0.0"
+      stop-on-bind-error: "true"
+      apply-inbound-acl: "localnet.auto"

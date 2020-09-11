@@ -1,0 +1,6 @@
+---
+- name: restart freeswitch
+  systemd:
+    enabled: yes
+    state: started
+    name: freeswitch

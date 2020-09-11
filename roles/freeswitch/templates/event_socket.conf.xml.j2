@@ -1,0 +1,9 @@
+<configuration name="event_socket.conf" description="Socket Client">
+  {% if socket is defined %}
+  <settings>
+  {% for key,value in socket.items() %}
+    <param name="{{ key }}" value="{{ value }}"/>
+  {% endfor %}
+  </settings>
+  {% endif %}
+</configuration>
