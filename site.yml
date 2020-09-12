@@ -5,6 +5,8 @@
   roles:
     - freeswitch
   vars:
+    repository: https://github.com/signalwire/freeswitch.git
+    version: v1.10
     socket:
       nat-map: "true"
       listen-port: 8021

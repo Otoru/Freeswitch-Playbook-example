@@ -1,2 +1,2 @@
-deb https://files.freeswitch.org/repo/deb/debian-release/ stretch main
-deb-src https://files.freeswitch.org/repo/deb/debian-release/ stretch main
+deb http://files.freeswitch.org/repo/deb/debian-release/ stretch main
+deb-src http://files.freeswitch.org/repo/deb/debian-release/ stretch main
